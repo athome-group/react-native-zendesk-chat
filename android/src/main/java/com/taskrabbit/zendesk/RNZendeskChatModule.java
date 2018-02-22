@@ -10,7 +10,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.zopim.android.sdk.api.ZopimChat;
 import com.zopim.android.sdk.model.VisitorInfo;
+import com.zopim.android.sdk.prechat.EmailTranscript;
 import com.zopim.android.sdk.prechat.ZopimChatActivity;
+import com.zopim.android.sdk.prechat.PreChatForm;
+
 
 import java.lang.String;
 
@@ -54,9 +57,20 @@ public class RNZendeskChatModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void startChat(ReadableMap options) {
         setVisitorInfo(options);
+
+        PreChatForm preChatForm = new PreChatForm.Builder()
+                .name(PreChatForm.Field.REQUIRED_EDITABLE)
+                .email(options.hasKey("emailNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED_EDITABLE)
+                .phoneNumber(options.hasKey("phoneNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED)
+                .department(options.hasKey("departmentNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED_EDITABLE)
+                .message(options.hasKey("messageNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED)
+                .build();
+
+        ZopimChat.SessionConfig config = new ZopimChat.SessionConfig()
+                .preChatForm(preChatForm).emailTranscript(EmailTranscript.PROMPT);
         Activity activity = getCurrentActivity();
         if (activity != null) {
-            activity.startActivity(new Intent(mReactContext, ZopimChatActivity.class));
+            ZopimChatActivity.startActivity(mReactContext, config);
         }
     }
 }
