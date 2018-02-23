@@ -62,12 +62,16 @@ public class RNZendeskChatModule extends ReactContextBaseJavaModule {
                 .name(PreChatForm.Field.REQUIRED_EDITABLE)
                 .email(options.hasKey("emailNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED_EDITABLE)
                 .phoneNumber(options.hasKey("phoneNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED)
-                .department(options.hasKey("departmentNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED_EDITABLE)
+                .department(options.hasKey("departmentNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED)
                 .message(options.hasKey("messageNotRequired") ? PreChatForm.Field.NOT_REQUIRED:PreChatForm.Field.REQUIRED)
                 .build();
 
         ZopimChat.SessionConfig config = new ZopimChat.SessionConfig()
                 .preChatForm(preChatForm).emailTranscript(EmailTranscript.PROMPT);
+        if (options.hasKey("department")) {
+            config.department(options.getString("department"));
+        }
+
         Activity activity = getCurrentActivity();
         if (activity != null) {
             ZopimChatActivity.startActivity(mReactContext, config);
