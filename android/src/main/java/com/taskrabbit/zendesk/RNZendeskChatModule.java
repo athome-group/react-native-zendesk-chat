@@ -2,6 +2,7 @@ package com.taskrabbit.zendesk;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -18,6 +19,7 @@ import com.zopim.android.sdk.prechat.PreChatForm;
 import java.lang.String;
 
 public class RNZendeskChatModule extends ReactContextBaseJavaModule {
+    private static final String TAG = "ZendeskChatModule";
     private ReactContext mReactContext;
 
     public RNZendeskChatModule(ReactApplicationContext reactContext) {
@@ -76,5 +78,13 @@ public class RNZendeskChatModule extends ReactContextBaseJavaModule {
         if (activity != null) {
             ZopimChatActivity.startActivity(mReactContext, config);
         }
+    }
+
+    @ReactMethod
+    public void endChat() {
+        // https://support.zendesk.com/hc/en-us/community/posts/115007753868-Android-SDK-ending-the-chat-session-programatically
+        // ZopimChatApi.resume(this).endChat();
+
+        Log.d(TAG, "endChat() does not work when the chat UI and the activity are not on screen");
     }
 }
